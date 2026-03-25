@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Pernikahan - Danang & Dita</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    
+    <style>
+        :root {
+            --bg-container: rgba(255, 255, 255, 0.95);
+            --text-main: #444444;
+            --text-muted: #888;
+            --accent-color: #778472;
+            --card-bg: #f9fbf9;
+            --border-color: #eee;
+        }
+
+        [data-theme="dark"] {
+            --bg-container: rgba(30, 30, 30, 0.95);
+            --text-main: #e0e0e0;
+            --text-muted: #aaa;
+            --accent-color: #a3b19f;
+            --card-bg: #2a2a2a;
+            --border-color: #444;
+        }
+
+        /* Efek Salju / Kelopak */
+        .petal {
+            position: fixed; top: -10%; z-index: 9998;
+            user-select: none; pointer-events: none;
+            color: #ffffff; font-size: 20px;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        body, html { margin: 0; padding: 0; overflow-x: hidden; scroll-behavior: smooth; height: 100%; transition: background 0.5s; }
+        
+        #bg-slideshow {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2; background-size: cover; background-position: center;
+            background-attachment: fixed; transition: background-image 1.5s ease-in-out;
+        }
+
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.45); z-index: -1;
+        }
+
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('AGN00897.jpg'); background-size: cover; background-position: center;
+            z-index: 9999; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; transition: 1.2s cubic-bezier(0.7, 0, 0.3, 1);
+            position: relative; overflow: hidden;
+        }
+
+        #overlay::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 1;
+        }
+
+        #overlay * { position: relative; z-index: 2; }
+        #overlay.hide { transform: translateY(-100%); opacity: 0; visibility: hidden; }
+
+        .container {
+            max-width: 500px; margin: 100px auto 40px auto;
+            position: relative; z-index: 10;
+            background: var(--bg-container); padding: 40px 25px;
+            border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            animation: fadeIn 1.5s ease-out; color: var(--text-main);
+        }
+
+        h1 { font-family: 'Great Vibes', cursive; font-size: 3.5rem; color: var(--accent-color); margin: 10px 0; text-align: center; }
+        .profile-name { font-family: 'Great Vibes', cursive; font-size: 2.3rem; color: var(--accent-color); margin: 5px 0; }
+        .sub-title { letter-spacing: 4px; text-transform: uppercase; font-size: 0.7rem; color: var(--text-muted); margin-top: 10px; text-align: center; }
+        
+        .btn {
+            background-color: var(--accent-color); color: white; border: none;
+            padding: 14px 35px; border-radius: 30px; cursor: pointer;
+            font-weight: 600; text-decoration: none; transition: 0.3s;
+            display: inline-block; font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); margin-top: 10px;
+        }
+
+        #music-control, #theme-toggle {
+            position: fixed; bottom: 25px; background: var(--accent-color); 
+            color: white; border: none; width: 45px; height: 45px; border-radius: 50%;
+            cursor: pointer; z-index: 1000; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        #music-control { right: 25px; }
+        #theme-toggle { left: 25px; display: none; }
+
+        .section { margin-bottom: 50px; padding-bottom: 25px; border-bottom: 1px dashed var(--border-color); }
+
+        .next-page-btn {
+            margin: 30px 0; display: flex; flex-direction: column; align-items: center; gap: 8px;
+            cursor: pointer; color: var(--accent-color); transition: 0.3s;
+        }
+        .next-page-btn:hover { transform: translateY(5px); opacity: 0.8; }
+        .next-page-btn span { font-size: 0.65rem; letter-spacing: 2px; font-weight: 600; }
+
+        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 25px 0; }
+        .gallery-grid img { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; transition: 0.3s ease; }
+
+        #countdown { display: flex; justify-content: space-around; margin: 25px 0; padding: 15px; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); }
+        .time-value { display: block; font-size: 1.6rem; font-weight: 600; color: var(--accent-color); }
+        .time-label { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); }
+
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-main); font-family: inherit; box-sizing: border-box; }
+
+        .rekening-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 15px;
+            padding: 20px; margin: 20px auto; text-align: center;
+        }
+        .bank-logo { width: 100px; margin-bottom: 10px; filter: grayscale(0.2); }
+        
+        .front-image-container img {
+            width: 160px; height: 160px; border-radius: 50%; object-fit: cover;
+            border: 4px solid #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        
+        .doa { font-size: 0.85rem; line-height: 1.6; font-style: italic; color: var(--text-muted); margin: 20px 0; text-align: center; }
+
+        /* Gaya Tambahan untuk Daftar Ucapan */
+        .ucapan-item {
+            background: var(--card-bg); border-radius: 15px; padding: 12px 15px;
+            margin-bottom: 12px; border-left: 4px solid var(--accent-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); animation: fadeIn 0.5s ease-in;
+            text-align: left;
+        }
+        .ucapan-item strong { display: block; font-size: 0.85rem; color: var(--accent-color); margin-bottom: 3px; }
+        .ucapan-item p { margin: 0; font-size: 0.8rem; line-height: 1.4; color: var(--text-main); }
+        #guest-book { margin-top: 30px; max-height: 350px; overflow-y: auto; padding: 5px; border-top: 1px solid var(--border-color); }
+        #guest-book::-webkit-scrollbar { width: 4px; }
+        #guest-book::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div id="bg-slideshow"></div>
+
+    <div id="overlay">
+        <div class="front-image-container">
+            <img src="AGN00897.jpg" alt="Profil Danang & Dita">
+        </div>
+        <p class="sub-title" style="color: white;">The Wedding of</p>
+        <h1 style="color: white; text-shadow: 2px 2px 10px rgba(0,0,0,0.3);">Danang & Dita</h1>
+        <p style="margin-bottom: 30px; font-weight: 300; color: white;">Kepada Bapak/Ibu/Saudara/i</p>
+        <button class="btn" onclick="openInvitation()">Buka Undangan</button>
+    </div>
+
+    <audio id="wedding-song" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+    </audio>
+    
+    <button id="theme-toggle" onclick="toggleTheme()">🌓</button>
+    <button id="music-control" onclick="toggleMusic()" style="display: none;">🎵</button>
+
+    <div class="main-content" id="main-content" style="opacity: 0;">
+        <div class="container">
+            
+            <section class="section" id="intro">
+                <div style="display: flex; justify-content: center;">
+                    <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_s9bm8wcn.json" background="transparent" speed="1" style="width: 150px; height: 150px;" loop autoplay></lottie-player>
+                </div>
+                <p class="sub-title">The Wedding of</p>
+                <h1>Danang & Dita</h1>
+                <div class="doa">
+                "Dan di antara tanda-tanda kekuasaan-Nya ialah menciptakan untukmu isteri-isteri dari jenismu sendiri... dijadikan-Nya diantaramu rasa kasih dan sayang." <br><strong>(Ar-Rum: 21)</strong>
+                </div>
+                <p style="font-size: 0.9rem; text-align: center; color: var(--text-main);">Tanpa mengurangi rasa hormat, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri hari bahagia kami.</p>
+                
+                <div class="next-page-btn" onclick="scrollToId('mempelai')">
+                    <span>LIHAT MEMPELAI</span>
+                    <div>▼</div>
+                </div>
+            </section>
+
+            <section class="section" id="mempelai" style="text-align: center;">
+                <h3 class="profile-name">Danang Aries Prabowo</h3>
+                <p style="font-size: 0.85rem;">Putra dari Bapak Ismail Hasan Basri & Ibu Lisa Astini</p>
+                <div style="font-family: 'Great Vibes'; font-size: 2.2rem; color: var(--accent-color); margin: 15px 0;">&</div>
+                <h3 class="profile-name">Dita Agestia</h3>
+                <p style="font-size: 0.85rem;">Putri dari Bapak Eko Tjahyono & Ibu Ita Maswita</p>
+
+                <div class="next-page-btn" onclick="scrollToId('acara')">
+                    <span>WAKTU & TEMPAT</span>
+                    <div>▼</div>
+                </div>
+            </section>
+
+            <section class="section" id="acara">
+                <h2 style="color: var(--accent-color); font-family: 'Great Vibes'; font-size: 2.5rem; text-align: center;">Simpan Tanggal</h2>
+                <div id="countdown">
+                    <div class="time-segment"><span class="time-value" id="days">00</span><span class="time-label">Hari</span></div>
+                    <div class="time-segment"><span class="time-value" id="hours">00</span><span class="time-label">Jam</span></div>
+                    <div class="time-segment"><span class="time-value" id="minutes">00</span><span class="time-label">Menit</span></div>
+                    <div class="time-segment"><span class="time-value" id="seconds">00</span><span class="time-label">Detik</span></div>
+                </div>
+                <p style="text-align: center; line-height: 1.6;">
+                    <strong>Jumat, 17 April 2026</strong><br>
+                    Balai Pertemuan Bhumiku, Denpasar, Bali
+                </p>
+                <div style="text-align: center;">
+                    <a href="https://maps.app.goo.gl/3YvS8vX2Xz8z8z8z8" target="_blank" class="btn">📍 Lokasi Maps</a>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 style="text-align: center; color: var(--accent-color); font-family: 'Great Vibes'; font-size: 2.5rem;">Our Gallery</h2>
+                <div class="gallery-grid">
+                    <img src="AGN00897.jpg" alt="Gallery 1">
+                    <img src="AGN00857.jpg" alt="Gallery 2">
+                    <img src="AGN00657.jpg" alt="Gallery 3">
+                    <img src="AGN00613.jpg" alt="Gallery 4">
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 style="text-align: center; color: var(--accent-color); font-family: 'Great Vibes'; font-size: 2.5rem;">RSVP</h2>
+                <form id="rsvp-form">
+                    <input type="text" name="Nama" id="nama" placeholder="Nama Anda" required>
+                    <select name="Kehadiran" id="kehadiran">
+                        <option value="Hadir">Saya akan Hadir</option>
+                        <option value="Tidak Hadir">Mohon Maaf, Tidak Hadir</option>
+                    </select>
+                    <textarea name="Pesan" id="pesan" rows="3" placeholder="Tulis doa atau ucapan Anda untuk mempelai..."></textarea>
+                    
+                    <button type="submit" id="submit-btn" class="btn" style="width: 100%;">Kirim Konfirmasi</button>
+                </form>
+                <p id="status-msg" style="text-align:center; font-size:0.8rem; margin-top:10px; display:none;"></p>
+
+                <div id="guest-book">
+                    <h4 style="text-align: center; font-size: 0.9rem; color: var(--accent-color); margin-bottom: 15px;">Doa & Ucapan Tamu</h4>
+                    <div id="ucapan-container">
+                        <div class="ucapan-item">
+                            <strong>Admin</strong>
+                            <p>Selamat berbahagia Danang & Dita! Semoga lancar sampai hari H.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" style="border: none; text-align: center;">
+                <h2 style="color: var(--accent-color); font-family: 'Great Vibes'; font-size: 2.5rem;">Amplop Digital</h2>
+                <div class="rekening-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg" alt="BCA Logo" class="bank-logo">
+                    <div class="rekening-number" id="norek" style="color: var(--text-main);">1460637461</div>
+                    <div class="rekening-name">Dita Agestia</div>
+                    <button class="btn" style="padding: 10px 20px; font-size: 0.8rem;" onclick="copyToClipboard()">Salin No. Rekening</button>
+                </div>
+            </section>
+
+            <p style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 40px;">
+                Made with ❤️ for Danang & Dita
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const slides = ['AGN00897.jpg', 'AGN00857.jpg'];
+        let currentSlide = 0;
+        const bgSlideshow = document.getElementById('bg-slideshow');
+
+        function nextSlide() {
+            bgSlideshow.style.backgroundImage = `url('${slides[currentSlide]}')`;
+            currentSlide = (currentSlide + 1) % slides.length;
+        }
+        setInterval(nextSlide, 5000); nextSlide();
+
+        function openInvitation() {
+            document.getElementById('overlay').classList.add('hide');
+            document.getElementById('main-content').style.opacity = '1';
+            document.getElementById('music-control').style.display = 'block';
+            document.getElementById('theme-toggle').style.display = 'block';
+            document.getElementById("wedding-song").play();
+            createSnow(); 
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
+        }
+
+        function scrollToId(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function createSnow() {
+            const snowIcons = ['❄', '❅', '•'];
+            setInterval(() => {
+                const petal = document.createElement('div');
+                petal.classList.add('petal');
+                petal.innerText = snowIcons[Math.floor(Math.random() * snowIcons.length)];
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.opacity = Math.random();
+                petal.style.fontSize = (Math.random() * 10 + 10) + 'px';
+                petal.style.animationDuration = (Math.random() * 5 + 5) + 's'; 
+                document.body.appendChild(petal);
+                setTimeout(() => { petal.remove(); }, 8000);
+            }, 300);
+        }
+
+        function copyToClipboard() {
+            const norek = document.getElementById("norek").innerText;
+            navigator.clipboard.writeText(norek);
+            alert("Nomor rekening berhasil disalin!");
+        }
+
+        const weddingDate = new Date("April 17, 2026 09:00:00").getTime();
+        setInterval(function() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+            if (distance > 0) {
+                document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+                document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000);
+            }
+        }, 1000);
+
+        function toggleMusic() {
+            const song = document.getElementById("wedding-song");
+            if (song.paused) song.play(); else song.pause();
+        }
+
+        // RSVP + DAFTAR UCAPAN INTEGRASI
+        const scriptURL = 'https://script.google.com/macros/s/AKfycby1Nlesc8UkJ9jWbs6JOsBTOpVXQIMe16Hj-uPatSFmVepwiY7LLkrtXZyH2oTIGBXL/exec'; 
+        const form = document.getElementById('rsvp-form');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const msg = document.getElementById('status-msg');
+            const nama = document.getElementById('nama').value;
+            const status = document.getElementById('kehadiran').value;
+            const pesan = document.getElementById('pesan').value || "Selamat ya!";
+
+            btn.disabled = true;
+            btn.innerText = "Mengirim...";
+
+            // Logika Menampilkan Ucapan Langsung di Web (Frontend)
+            const container = document.getElementById('ucapan-container');
+            const elementBaru = document.createElement('div');
+            elementBaru.classList.add('ucapan-item');
+            elementBaru.innerHTML = `<strong>${nama}</strong><p>${pesan}</p>`;
+            container.prepend(elementBaru); // Menambahkan di paling atas
+
+            const waLink = `https://wa.me/6285604897944?text=${encodeURIComponent("Halo, saya "+nama+" mengonfirmasi: "+status+". \n\nUcapan: "+pesan)}`;
+            
+            if(scriptURL !== 'GANTI_DENGAN_URL_WEB_APP_GOOGLE_SHEET_KAMU') {
+                fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => {
+                    msg.style.display = "block";
+                    msg.innerText = "Ucapan terkirim! Membuka WhatsApp...";
+                    msg.style.color = "green";
+                    setTimeout(() => { window.open(waLink, '_blank'); }, 1500);
+                    btn.disabled = false;
+                    btn.innerText = "Kirim Konfirmasi";
+                    form.reset(); // Kosongkan form setelah kirim
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    window.open(waLink, '_blank');
+                    btn.disabled = false;
+                    btn.innerText = "Kirim Konfirmasi";
+                });
+            } else {
+                window.open(waLink, '_blank');
+                btn.disabled = false;
+                btn.innerText = "Kirim Konfirmasi";
+            }
+        });
+    </script>
+</body>
+</html>
